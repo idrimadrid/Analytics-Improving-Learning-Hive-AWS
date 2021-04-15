@@ -1,7 +1,7 @@
 ## Hadoop - Hive - Sqoop - AWS
 
 # Analytics-Improving-Learning-Hive-AWS
-
+![image info](./pictures/image.png)
 ## Introduction :
 Le développement phénoménal des systèmes d’informations a conduit à une augmentation des cours en ligne d'apprentissage pour les étudiants (MOOCs). Dans ces cours, les étudiants utilisent un environnement d'apprentissage virtuel (VLE), pour simuler l'expérience d'une salle de classe réelle, un des avantages les plus intéressants est la capacité d'évaluation en temps réel, la collecte du comportement étudiant et l’interaction avec les ressources des cours, toutes ces informations engendre ce qu’on appelle le “Big Data”, représentant une mine d’or pour les établissement d’enseignement, elles peuvent être utilisées pour détecter les étudiants en danger d'échec et intervenir à temps  et même afin d’améliorer la qualité d’apprentissage.
 
