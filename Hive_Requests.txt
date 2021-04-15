@@ -1,0 +1,114 @@
+**Création de la table sur base de données HIVE:
+
+create	external table	courses	(	code_module	STRING,	code_presentation	string,	module_presentation_length	int)	 ROW	FORMAT	DELIMITED	FIELDS	TERMINATED	BY	“,”;
+
+**Chargement des données dans la table HIVE:
+
+load data inpath "/user/cloudera/students_database/courses/part*"  into table courses
+
+
+** Le pourcentage des résultats finaux des étudiants par sex :
+
+requête 1 : 
+
+select final_result,(count(*)/17875)*100 male_percentage  
+from studentinfo 
+where gender="M" 
+group by final_result
+
+Requête 2 : 
+
+select final_result,(count(*)/14718)*100 female_percentage  
+from studentinfo 
+where gender="F" 
+group by final_result
+
+
+**Le nombre total de clics a-t-il un impact sur le résultat final ?
+
+Requête : 
+
+select stin.final_result, avg(click) clicks_mean 
+from studentinfo stin  
+join (select id_student,sum(sum_click) click from studentvle group by id_student) as temp on (temp.id_student=stin.id_student) 
+group by stin.final_result;
+
+**Nombres moyens de clics pour chaque statut dans chaque module: 
+
+Requête : 
+
+select stin.code_module,stin.final_result,avg(click) clicks_mean 
+from studentinfo stin  
+join (select id_student,code_module,sum(sum_click) click from studentvle group by id_student, code_module) as temp 
+on (temp.id_student=stin.id_student) 
+group by stin.final_result,stin.code_module 
+order by code_module asc;
+
+
+**Relation entre le nombre total de clics et les modules:
+
+Requête : 
+
+select code_module,sum(sum_click) clicks_nbr 
+from studentvle 
+group by code_module
+
+**La moyenne des clics requis pour réussir dans chaque module:
+
+Requête : 
+
+select stin.code_module,stin.final_result,avg(click) clicks_mean 
+from studentinfo stin  join (select id_student,code_module,sum(sum_click) click 
+from studentvle group by id_student, code_module) as temp 
+on (temp.id_student=stin.id_student) 
+where stin.final_result="Pass"  
+group by stin.final_result,stin.code_module 
+order by code_module asc
+
+
+**L'impact de  l'handicap sur le résultat final : 
+
+Requête 1 : 
+
+select disability,final_result,(count(*)/29429)*100 nbr 
+from studentinfo
+where disability ="N"  
+group by disability,final_result
+
+Requête 2 :
+
+select disability,final_result,(count(*)/3164)*100 nbr 
+from studentinfo
+where disability ="Y"  
+group by disability,final_result
+
+**La moyenne des clics par activité d’apprentissage :
+
+Requête : 
+
+
+select vle.activity_type,avg(sum_click) clicks_mean 
+from studentvle 
+where vle.activity_type in (“quiz”,”oucontent”,”glossary”,”ouwiki”,”dataplus”,”forumng”) 
+join vle
+on (studentvle.id_site=vle.id_site)
+group by vle.activity_type
+
+
+**Le niveau d'éducation peut-il influencer le résultat final ?
+
+Requête 1: 
+select final_result ,count(*)/27203*100  from students_info  where highest_education in ("A Level or Equivalent","Lower Than A Level") group by final_result
+Requête 2: 
+select final_result ,count(*)/5390*100  from students_info  where highest_education not in ("A Level or Equivalent","Lower Than A Level") group by final_result
+
+**L’impact de l’inscription tardive sur le résultat finale :
+
+Requête : 
+
+select stin.final result,avg(dater) date_regis_mean 
+from studentinfo stin  
+join (select id_student,avg(date_registration) dater from studentregistration group by id_student) as temp 
+on (temp.id_student=stin.id_student) where stin.final_result in (“Pass”,“Fail”) 
+group by stin.final_result
+
